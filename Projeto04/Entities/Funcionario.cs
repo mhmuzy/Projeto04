@@ -8,7 +8,7 @@ namespace Projeto04.Entities
     {
         public int IdFuncionario { get; set; }
 
-        public string Nome { get; set; }
+        public string NomeFun { get; set; }
 
         public decimal Salario { get; set; }
 

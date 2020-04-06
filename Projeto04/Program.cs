@@ -13,7 +13,7 @@ namespace Projeto04
                 foreach (var item in repository.Consultar())
                 {
                     Console.WriteLine(item.IdFuncionario);
-                    Console.WriteLine(item.Nome);
+                    Console.WriteLine(item.NomeFun);
                     Console.WriteLine(item.Salario);
                     Console.WriteLine(item.DataAdmissao);
                 }

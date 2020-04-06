@@ -34,14 +34,14 @@ namespace Projeto04.Repositories
 
         public List<Funcionario> Consultar()
         {
-            var query = "select * from Funcionario f inner join Dependente d "
+            var query = "select *  from Funcionario f inner join Dependente d "
                       + "on f.IdFuncionario = d.IdFuncionario";
 
             using (var connection = new SqlConnection(connectionString))
             {
                 return connection.Query(query, (Funcionario f, List<Dependente> d) =>
                 {
-                    f.Dependentes = d;
+                    //f.Dependentes = d;
                     return f;
                 }, splitOn: "IdFuncionario")
                 .ToList();
