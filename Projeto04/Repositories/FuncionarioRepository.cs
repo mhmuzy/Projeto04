@@ -34,7 +34,17 @@ namespace Projeto04.Repositories
 
         public List<Funcionario> Consultar()
         {
-            throw new NotImplementedException();
+            var query = "select * from Funcionario f inner join Dependente d "
+                      + "on f.IdFuncionario = d.IdFuncionario";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query(query, (Funcionario f, Dependente d) =>
+                {
+                    return f;
+                }, splitOn: "IdFunconario")
+                .ToList();
+            }
         }
 
         public void Inserir(Funcionario obj)
