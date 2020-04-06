@@ -39,10 +39,11 @@ namespace Projeto04.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Query(query, (Funcionario f, Dependente d) =>
+                return connection.Query(query, (Funcionario f, List<Dependente> d) =>
                 {
+                    f.Dependentes = d;
                     return f;
-                }, splitOn: "IdFunconario")
+                }, splitOn: "IdFuncionario")
                 .ToList();
             }
         }
