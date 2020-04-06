@@ -12,19 +12,16 @@ namespace Projeto04
                 var repository = new FuncionarioRepository();
                 foreach (var item in repository.Consultar())
                 {
-                    Console.WriteLine("Lista de Funcionarios:");
-                    Console.WriteLine("---------------------------------------");
-                    Console.WriteLine("Id do Funcionario: " + item.IdFuncionario);
-                    Console.WriteLine("Nome do Funcionário: " + item.Nome);
-                    Console.WriteLine("Slário: R$" + item.Salario);
-                    Console.WriteLine("---------------------------------------");
-
+                    Console.WriteLine(item.IdFuncionario);
+                    Console.WriteLine(item.Nome);
+                    Console.WriteLine(item.Salario);
+                    Console.WriteLine(item.DataAdmissao);
                 }
             }
             catch (Exception e)
             {
 
-                Console.WriteLine("Ocorreu um erro: " + e.Message);
+                Console.WriteLine(e.Message);
             }
 
             Console.ReadKey();
