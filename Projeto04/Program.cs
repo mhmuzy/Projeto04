@@ -1,5 +1,6 @@
-﻿using System;
-using Projeto04.Repositories;
+﻿using Projeto04.Repositories;
+using System;
+using Projeto04.Controlers; //importando..
 
 namespace Projeto04
 {
@@ -9,22 +10,18 @@ namespace Projeto04
         {
             try
             {
-                var repository = new FuncionarioRepository();
-                foreach (var item in repository.Consultar())
-                {
-                    Console.WriteLine(item.IdFuncionario);
-                    Console.WriteLine(item.NomeFun);
-                    Console.WriteLine(item.Salario);
-                    Console.WriteLine(item.DataAdmissao);
-                }
+                Console.WriteLine("\n - CONTROLE DE FUNCIONÁRIOS - \n");
+
+                var funcionarioController = new FuncionarioController();
+                funcionarioController.CadastrarFuncionario();
             }
             catch (Exception e)
             {
 
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Erro: " + e.Message);
             }
 
-            Console.ReadKey();
+            Console.ReadKey(); //pausar a execução do prompt..
         }
     }
 }

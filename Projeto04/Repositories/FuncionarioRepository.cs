@@ -24,35 +24,46 @@ namespace Projeto04.Repositories
 
         public List<Funcionario> Consultar(string nome)
         {
-            throw new NotImplementedException();
+            var query = "select * from Funcionario where NomeFun like @Nome";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query<Funcionario>
+                    (query, new { Nome = $"%{nome}%" }).ToList();
+            }
         }
 
         public List<Funcionario> Consultar(decimal salarioMin, decimal salarioMax)
         {
-            throw new NotImplementedException();
+            var query = "select * from Funcionario where Salario Between @Min and @Max";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query<Funcionario>
+                    (query, new { Min = salarioMin, Max = salarioMax }).ToList();
+            }
         }
 
         public List<Funcionario> Consultar()
         {
-            var query = "select *  from Funcionario f inner join Dependente d "
-                      + "on f.IdFuncionario = d.IdFuncionario";
+            var query = "select * from Funcionario";
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Query(query, (Funcionario f, List<Dependente> d) =>
-                {
-                    //f.Dependentes = d;
-                    return f;
-                }, splitOn: "IdFuncionario")
-                .ToList();
+                return connection.Query<Funcionario>(query).ToList();
             }
+
         }
 
         public void Inserir(Funcionario obj)
         {
             using (var connection = new  SqlConnection(connectionString))
             {
-                connection.Execute("SP_InserirFuncionario", obj,
+                connection.Execute("SP_InserirFuncionario", 
+                    new {
+                        obj.NomeFun,
+                        obj.Salario
+                    },
                     commandType : CommandType.StoredProcedure);
             }
         }
@@ -61,14 +72,40 @@ namespace Projeto04.Repositories
         {
             using (var connection = new SqlConnection(connectionString))
             {
-                connection.Execute("SP_AlterarFuncionario", obj,
+                connection.Execute("SP_AlterarFuncionario", 
+                    new
+                    {
+                        obj.IdFuncionario,
+                        obj.NomeFun,
+                        obj.Salario,
+                        obj.DataAdmissao
+                    },
                     commandType : CommandType.StoredProcedure);
             }
         }
 
         public void Excluir(Funcionario obj)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Execute("SP_ExcluirFuncionario",
+                    new
+                    {
+                        obj.IdFuncionario
+                    },
+                    commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public Funcionario ObterPorId(int id)
+        {
+            var query = "select * from Funcionario where IdFuncionario =  @IdFuncionario";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query<Funcionario>
+                    (query, new { IdFuncionario = id }).FirstOrDefault();
+            }
         }
     }
 }

@@ -15,5 +15,6 @@ namespace Projeto04.Contracts
         void Excluir(T obj);
 
         List<T> Consultar();
+        T ObterPorId(int id);
     }
 }

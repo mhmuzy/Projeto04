@@ -8,5 +8,6 @@ namespace Projeto04.Contracts
     public interface IDependenteRepository : IBaseRepository<Dependente>
     {
 
+        List<Dependente> Consultar(int idFuncionario);
     }
 }

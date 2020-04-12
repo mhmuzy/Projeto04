@@ -25,7 +25,13 @@ namespace Projeto04.Repositories
         {
             using (var connection = new SqlConnection(connectionString))
             {
-                connection.Execute("SP_InserirDependente", obj, 
+                connection.Execute("SP_InserirDependente", 
+                    new
+                    {
+                        obj.Nome,
+                        obj.DataNascimento,
+                        obj.IdFuncionario 
+                    }, 
                     commandType : CommandType.StoredProcedure);   
             }
         }
@@ -34,18 +40,33 @@ namespace Projeto04.Repositories
         {
             using (var connection = new SqlConnection(connectionString))
             {
-                connection.Execute("SP_AlterarDependente", obj,
+                connection.Execute("SP_AlterarDependente", 
+                    new
+                    {
+                        obj.IdDependente,
+                        obj.Nome,
+                        obj.DataNascimento,
+                        obj.IdFuncionario
+                    },
                     commandType : CommandType.StoredProcedure);
             }
         }
 
         public List<Dependente> Consultar()
         {
-            var query = "select * from Dependente";
+            var query = "select * from Dependente d inner join Funcionario f "
+                      + "on f.IdFuncionario = d.IdFuncionario";
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Query<Dependente>(query).ToList();
+                return connection.Query(query, 
+                    (Dependente d, Funcionario f) => 
+                    {
+                        d.Funcionario = f; //relacionamento TER-1
+                        return d;
+                    },
+                    splitOn : "IdFuncionario" //foreign key
+                    ).ToList();
             }
         }
 
@@ -53,8 +74,43 @@ namespace Projeto04.Repositories
         {
             using (var connection = new SqlConnection(connectionString))
             {
-                connection.Execute("SP_ExcluirDependente", obj,
+                connection.Execute("SP_ExcluirDependente", 
+                    new
+                    {
+                        obj.IdDependente
+                    },
                     commandType : CommandType.StoredProcedure);
+            }
+        }
+
+        public Dependente ObterPorId(int id)
+        {
+            var query = "select * from Dependente d inner join Funcionario f "
+                       + "on f.IdFuncionario = d.IdFuncionario "
+                       + "where d.IdDependente = @IdDependente";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query(query,
+                    (Dependente d, Funcionario f) =>
+                    {
+                        d.Funcionario = f; //relacionamento TER-1
+                        return d;
+                    },
+                    new { IdDependente = id },
+                    splitOn: "IdFuncionario" //foreign key
+                    ).FirstOrDefault();
+            }
+        }
+
+        public List<Dependente> Consultar(int idFuncionario)
+        {
+            var query = "select * from Dependente where IdFuncionario = @IdFuncionario";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Query<Dependente>
+                    (query, new { idFuncionario }).ToList();
             }
         }
     }
